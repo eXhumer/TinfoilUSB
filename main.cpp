@@ -56,6 +56,14 @@ int main(int argc, char* argv[])
 							break;
 						}
 
+						char buf[64];
+						switch (libusb_get_string_descriptor_ascii(dev_handle, dev_desc.iManufacturer, reinterpret_cast<unsigned char*>(buf), 64))
+						{
+						case LIBUSB_SUCCESS:
+							std::cout << "Manufacturer: " << std::string(buf) << std::endl;
+						default:
+							break;
+						}
 						libusb_config_descriptor* p_conf_desc;
 						switch (libusb_get_active_config_descriptor(device, &p_conf_desc))
 						{
