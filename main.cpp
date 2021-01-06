@@ -1,4 +1,4 @@
-#include <libusb.h>
+#include <libusb-1.0/libusb.h>
 #include <iostream>
 #include <iomanip>
 #include "types.h"
@@ -75,12 +75,16 @@ int main(int argc, char* argv[])
 											case LIBUSB_ENDPOINT_IN:
 												libusb_claim_interface(dev_handle, dev_interface_idx);
 												tinfoil_usb_header_packet header_packet;
-												libusb_bulk_transfer(dev_handle, p_dev_interface_ep_desc->bEndpointAddress, reinterpret_cast<unsigned char*>(&header_packet), sizeof(tinfoil_usb_header_packet), &xfer_length, 60000);
+												libusb_bulk_transfer(dev_handle, p_dev_interface_ep_desc->bEndpointAddress,
+													reinterpret_cast<unsigned char*>(&header_packet),
+													sizeof(tinfoil_usb_header_packet), &xfer_length, 60000);
 												if (header_packet.magic == TINFOIL_USB_HEADER_MAGIC)
 												{
 													print_header_packet(header_packet);
 													char* payload_buffer = new char[header_packet.size + 1];
-													libusb_bulk_transfer(dev_handle, p_dev_interface_ep_desc->bEndpointAddress, reinterpret_cast<unsigned char*>(payload_buffer), header_packet.size, &xfer_length, 60000);
+													libusb_bulk_transfer(dev_handle, p_dev_interface_ep_desc->bEndpointAddress,
+														reinterpret_cast<unsigned char*>(payload_buffer), header_packet.size,
+														&xfer_length, 60000);
 													payload_buffer[header_packet.size] = 0;
 													std::cout << "Payload Data: " << std::string(payload_buffer) << std::endl;
 													delete[] payload_buffer;
