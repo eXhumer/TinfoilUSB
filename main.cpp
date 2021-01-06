@@ -48,6 +48,7 @@ int main(int argc, char* argv[])
 								{
 								case LIBUSB_SUCCESS:
 									std::cout << "Tinfoil USB Device unconfigured detected!\n";
+									break;
 								default:
 									break;
 								}
@@ -61,9 +62,11 @@ int main(int argc, char* argv[])
 						{
 						case LIBUSB_SUCCESS:
 							std::cout << "Manufacturer: " << std::string(buf) << std::endl;
+							break;
 						default:
 							break;
 						}
+
 						libusb_config_descriptor* p_conf_desc;
 						switch (libusb_get_active_config_descriptor(device, &p_conf_desc))
 						{
@@ -94,6 +97,7 @@ int main(int argc, char* argv[])
 													delete[] payload_buffer;
 												}
 												libusb_release_interface(dev_handle, dev_interface_idx);
+												break;
 												
 											case LIBUSB_ENDPOINT_OUT:
 											default:
@@ -102,37 +106,91 @@ int main(int argc, char* argv[])
 										}
 								}
 							}
+							break;
+
 						default:
 							break;
 						}
 
 						libusb_free_config_descriptor(p_conf_desc);
 						libusb_close(dev_handle);
+						break;
+
 					default:
 						break;
 					}
 					break;
+
 				default:
 					break;
 				}
+
 			case 0x057e: // Nintendo Co., Ltd
 				switch (dev_desc.idProduct)
 				{
 				case 0x3000: // Tinfoil / Tinleaf / Goldleaf / Awoo-Installer
+					std::cout << "Switch Homebrew USB device detected!\n";
+					libusb_device_handle* dev_handle;
+					switch (libusb_open(device, &dev_handle))
+					{
+					case LIBUSB_SUCCESS:
+						switch (libusb_get_configuration(dev_handle, &dev_config))
+						{
+						case LIBUSB_SUCCESS:
+							if (dev_config == 0)
+								switch (libusb_set_configuration(dev_handle, 1))
+								{
+								case LIBUSB_SUCCESS:
+									std::cout << "Switch Homebrew USB device unconfigured detected!\n";
+									break;
+
+								default:
+									break;
+								}
+							break;
+
+						default:
+							break;
+						}
+
+						char buf[64];
+						switch (libusb_get_string_descriptor_ascii(dev_handle, dev_desc.iProduct, reinterpret_cast<unsigned char*>(buf), 64))
+						{
+						case LIBUSB_SUCCESS:
+							std::cout << "Manufacturer: " << std::string(buf) << std::endl;
+							break;
+
+						default:
+							break;
+						}
+						break;
+
+					default:
+						break;
+					}
+
+					libusb_close(dev_handle);
 					break;
+
 				case 0x2000: // Switch
 					break;
+
 				default:
 					break;
 				}
+				break;
+
 			case 0x0955: // NVIDIA
 				switch (dev_desc.idProduct)
 				{
 				case 0x7321: // Switch RCM
 					break;
+
 				default:
 					break;
 				}
+				break;
+
 			default:
 				break;
 			}
@@ -140,6 +198,8 @@ int main(int argc, char* argv[])
 
 		libusb_free_device_list(devices, 1);
 		libusb_exit(NULL);
+		break;
+
 	default:
 		break;
 	}
