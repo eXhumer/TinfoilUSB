@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
 						switch (libusb_get_string_descriptor_ascii(dev_handle, dev_desc.iProduct, reinterpret_cast<unsigned char*>(buf), 64))
 						{
 						case LIBUSB_SUCCESS:
-							std::cout << "Manufacturer: " << std::string(buf) << std::endl;
+							std::cout << "Product: " << std::string(buf) << std::endl;
 							break;
 
 						default:
