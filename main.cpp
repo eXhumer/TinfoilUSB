@@ -48,10 +48,13 @@ int main(int argc, char* argv[])
 								{
 								case LIBUSB_SUCCESS:
 									std::cout << "Tinfoil USB Device unconfigured detected!\n";
+									break;
+
 								default:
 									break;
 								}
 							break;
+
 						default:
 							break;
 						}
@@ -90,6 +93,7 @@ int main(int argc, char* argv[])
 													delete[] payload_buffer;
 												}
 												libusb_release_interface(dev_handle, dev_interface_idx);
+												break;
 												
 											case LIBUSB_ENDPOINT_OUT:
 											default:
@@ -98,37 +102,52 @@ int main(int argc, char* argv[])
 										}
 								}
 							}
+							break;
+
 						default:
 							break;
 						}
 
 						libusb_free_config_descriptor(p_conf_desc);
 						libusb_close(dev_handle);
+						break;
+
 					default:
 						break;
 					}
+
 					break;
+
 				default:
 					break;
 				}
+				break;
+
 			case 0x057e: // Nintendo Co., Ltd
 				switch (dev_desc.idProduct)
 				{
 				case 0x3000: // Tinfoil / Tinleaf / Goldleaf / Awoo-Installer
 					break;
+
 				case 0x2000: // Switch
 					break;
+
 				default:
 					break;
 				}
+				break;
+
 			case 0x0955: // NVIDIA
 				switch (dev_desc.idProduct)
 				{
 				case 0x7321: // Switch RCM
 					break;
+
 				default:
 					break;
 				}
+				break;
+
 			default:
 				break;
 			}
@@ -136,6 +155,8 @@ int main(int argc, char* argv[])
 
 		libusb_free_device_list(devices, 1);
 		libusb_exit(NULL);
+		break;
+
 	default:
 		break;
 	}
